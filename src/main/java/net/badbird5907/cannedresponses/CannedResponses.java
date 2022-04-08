@@ -3,6 +3,7 @@ package net.badbird5907.cannedresponses;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
+import net.badbird5907.cannedresponses.commands.ModifyCommand;
 import net.badbird5907.cannedresponses.commands.CannedMessagesCommand;
 import net.badbird5907.cannedresponses.listener.MessageListener;
 import net.badbird5907.cannedresponses.manager.ConfigManager;
@@ -47,7 +48,8 @@ public class CannedResponses {
             //set bot status
             jda.getPresence().setPresence(OnlineStatus.DO_NOT_DISTURB, Activity.of(Activity.ActivityType.WATCHING,"Your Messages"),false);
             JDACommand command = new JDACommand(jda); // Our command framework - https://github.com/Badbird-5907/JDACommand
-            command.registerCommand(new CannedMessagesCommand()); // Register commands in package
+            command.registerCommand(new CannedMessagesCommand());
+            command.registerCommand(new ModifyCommand());
 
             System.out.println("Canned Responses Bot Successfully connected to " + jda.getSelfUser().getAsTag() + " (" + jda.getSelfUser().getIdLong() + ") " + new Date());
             System.out.println("Registering commands with discord, this may take a while...");

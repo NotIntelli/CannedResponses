@@ -1,14 +1,18 @@
 package net.badbird5907.cannedresponses.manager;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import net.badbird5907.cannedresponses.CannedResponses;
+import net.badbird5907.cannedresponses.object.CannedMessage;
 import net.badbird5907.cannedresponses.object.CannedMessageConfig;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +30,7 @@ public class ConfigManager {
     private String prefix;
 
     @Getter
+    @Setter
     private int minimumWords = -1;
 
     @Getter
@@ -37,6 +42,10 @@ public class ConfigManager {
 
     @SneakyThrows
     public void reload(CannedResponses bot) {
+        managerRoles.clear();
+        ignoreRoles.clear();
+        ignoreChannels.clear();
+
         if (!CONFIG_FILE.exists()) {
             //copy config.json in jar to config.json
             Files.copy(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("config.json")), CONFIG_FILE.toPath());
@@ -64,5 +73,24 @@ public class ConfigManager {
         }
 
         messageConfig = new CannedMessageConfig(JsonParser.parseString(new String(Files.readAllBytes(CANNED_MESSAGE_CONFIG.toPath()))).getAsJsonArray());
+    }
+
+    public void saveCannedMessages() {
+        JsonArray jsonArray = messageConfig.asJsonArray();
+        String json = CannedResponses.getInstance().getGson().toJson(jsonArray);
+        try {
+            Files.write(CANNED_MESSAGE_CONFIG.toPath(), json.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public CannedMessage getCannedMessage(String key) {
+        return messageConfig
+                .getCannedMessages()
+                .stream()
+                .filter(c -> c.getKeys().contains(key.toLowerCase()) || c.getName().equalsIgnoreCase(key))
+                .findFirst()
+                .orElse(null);
     }
 }

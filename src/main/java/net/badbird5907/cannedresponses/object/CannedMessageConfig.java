@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.awt.*;
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,6 +21,14 @@ public class CannedMessageConfig {
             JsonObject obj = element.getAsJsonObject();
             cannedMessages.add(new CannedMessage().load(obj));
         }
+    }
+
+    public JsonArray asJsonArray() {
+        JsonArray arr = new JsonArray();
+        for (CannedMessage message : cannedMessages) {
+            arr.add(message.asJsonObject());
+        }
+        return arr;
     }
 
     public MessageEmbed getEmbed() {

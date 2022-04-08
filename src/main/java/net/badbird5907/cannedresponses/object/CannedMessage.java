@@ -16,7 +16,7 @@ public class CannedMessage {
     private Set<String> keys;
     private String response = null;
     private boolean automated = false;
-    private List<String> keywords,keywordsRequired;
+    private List<String> keywords, keywordsRequired;
     private int minimumWords = -1;
     private String name;
 
@@ -41,10 +41,26 @@ public class CannedMessage {
         }
         return this;
     }
+
     public boolean canReply(String message, int words, CannedResponses bot) {
         if (minimumWords != -1)
             return words >= minimumWords;
         return words >= bot.getConfigManager().getMinimumWords();
     }
 
+    public JsonObject asJsonObject() {
+        JsonObject json = new JsonObject();
+        json.addProperty("name", name);
+        json.addProperty("response", response);
+        json.add("keys", CannedResponses.getInstance().getGson().toJsonTree(keys));
+        if (automated) {
+            JsonObject automated = new JsonObject();
+            automated.add("keywords", CannedResponses.getInstance().getGson().toJsonTree(keywords));
+            automated.add("keywords-required", CannedResponses.getInstance().getGson().toJsonTree(keywordsRequired));
+            if (minimumWords != -1)
+                automated.addProperty("minimum-words", minimumWords);
+            json.add("automated", automated);
+        }
+        return json;
+    }
 }
