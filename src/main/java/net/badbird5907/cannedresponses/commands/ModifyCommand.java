@@ -153,6 +153,16 @@ public class ModifyCommand {
         }
     }
 
+    @Command(name = "test", description = "test")
+    public void test(CommandContext ctx, @Required String key) {
+        CannedMessage canned = CannedResponses.getInstance().getConfigManager().getCannedMessage(key);
+        if (canned == null) {
+            ctx.reply("Could not find that key!");
+            return;
+        }
+        ctx.reply("" + canned.getMinimumWords());
+    }
+
     public boolean canModify(CommandContext ctx) {
         return ctx.getMember().getRoles().stream().anyMatch(r -> CannedResponses.getInstance().getConfigManager().getManagerRoles().contains(r.getIdLong()));
     }
