@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Test",
+    "keys": [
+      "test",
+      "test2",
+      "t"
+    ],
+    "response": "This is a test message",
+    "automated": {
+      "keywords": [
+        "world"
+      ],
+      "keywords-required": [
+        "hello"
+      ],
+      "minimum-words": 1
+    }
+  }
+]

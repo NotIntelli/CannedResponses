@@ -1,0 +1,15 @@
+{
+  "manager-roles": [
+    "role ids here"
+  ],
+  "ignore-roles": [
+    "the bot will not auto-respond to role ids listed here"
+  ],
+  "ignore-channels": [
+    "the bot will not auto-respond to channel ids listed here"
+  ],
+  "automated-settings": {
+    "minimum-words": 3
+  },
+  "prefix": "^"
+}
