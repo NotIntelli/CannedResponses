@@ -21,6 +21,15 @@ public class CannedMessagesCommand {
             ctx.reply(canned.getResponse());
         }
     }
+    @Command(name = "info",description = "Shows information about a canned message")
+    public void info(CommandContext ctx, @Required String key) {
+        CannedMessage canned = CannedResponses.getInstance().getConfigManager().getCannedMessage(key);
+        if (canned == null) {
+            ctx.reply("No message found with that key");
+            return;
+        }
+        ctx.reply(canned.getInfo());
+    }
 
     @Command(name = "reload", description = "Reload config")
     public void reload(CommandContext ctx) {

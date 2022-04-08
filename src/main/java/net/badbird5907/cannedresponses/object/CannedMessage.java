@@ -4,7 +4,10 @@ import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
 import net.badbird5907.cannedresponses.CannedResponses;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -16,7 +19,8 @@ public class CannedMessage {
     private Set<String> keys;
     private String response = null;
     private boolean automated = false;
-    private List<String> keywords, keywordsRequired;
+    private List<String> keywords, //has to contain at least one keyword
+            keywordsRequired; // has to contain all keywords
     private int minimumWords = -1;
     private String name;
 
@@ -62,5 +66,21 @@ public class CannedMessage {
             json.add("automated", automated);
         }
         return json;
+    }
+
+    public MessageEmbed getInfo() {
+        EmbedBuilder builder = new EmbedBuilder()
+                .setColor(Color.GREEN)
+                .setTitle("Canned Message Info")
+                .addField("Name", name, true)
+                .addField("Response", response, true)
+                .addField("Keys", keys.toString(), true);
+        if (automated) {
+            builder.addField("Automated", "Yes", true)
+                    .addField("Keywords", keywords.toString(), true)
+                    .addField("Keywords Required", keywordsRequired.toString(), true)
+                    .addField("Minimum Words To Activate", (minimumWords != -1 ? minimumWords : CannedResponses.getInstance().getConfigManager().getMinimumWords()) + "", true);
+        }
+        return builder.build();
     }
 }

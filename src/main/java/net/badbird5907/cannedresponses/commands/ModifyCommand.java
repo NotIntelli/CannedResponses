@@ -85,8 +85,9 @@ public class ModifyCommand {
             ctx.reply("That keyword is already in use!");
             return;
         }
-        if (required) canned.getKeywords().add(keyword);
-        else canned.getKeywordsRequired().add(keyword);
+        canned.setAutomated(true);
+        if (required) canned.getKeywordsRequired().add(keyword);
+        else canned.getKeywords().add(keyword);
         CannedResponses.getInstance().getConfigManager().saveCannedMessages();
         ctx.reply("Added keyword `" + keyword + "` to " + canned.getName() + " (required: " + required + ")");
     }
@@ -101,10 +102,6 @@ public class ModifyCommand {
             ctx.reply("Could not find that key!");
             return;
         }
-        if (canned.getKeywords().contains(keyword)) {
-            ctx.reply("That keyword is already in use!");
-            return;
-        }
         boolean required, a, b;
         a = canned.getKeywords().remove(keyword);
         b = required = canned.getKeywordsRequired().remove(keyword);
@@ -113,6 +110,9 @@ public class ModifyCommand {
             return;
         }
         CannedResponses.getInstance().getConfigManager().saveCannedMessages();
+        if (canned.getKeywords().isEmpty() && canned.getKeywordsRequired().isEmpty()) {
+            canned.setAutomated(false);
+        }
         ctx.reply("Removed keyword `" + keyword + "` from " + canned.getName() + " (required: " + required + ")");
     }
 
@@ -152,17 +152,6 @@ public class ModifyCommand {
             ctx.reply("Set minimum for " + canned.getName() + " to `" + minimum + "`");
         }
     }
-
-    @Command(name = "test", description = "test")
-    public void test(CommandContext ctx, @Required String key) {
-        CannedMessage canned = CannedResponses.getInstance().getConfigManager().getCannedMessage(key);
-        if (canned == null) {
-            ctx.reply("Could not find that key!");
-            return;
-        }
-        ctx.reply("" + canned.getMinimumWords());
-    }
-
     public boolean canModify(CommandContext ctx) {
         return ctx.getMember().getRoles().stream().anyMatch(r -> CannedResponses.getInstance().getConfigManager().getManagerRoles().contains(r.getIdLong()));
     }

@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Objects;
 
 public class MessageListener extends ListenerAdapter {
@@ -31,6 +32,8 @@ public class MessageListener extends ListenerAdapter {
             return;
         }
         int words = content.split(" ").length;
+        if (words == 0)
+            words = 1;
 
         boolean cannedResponse = content.startsWith(bot.getConfigManager().getPrefix());
         for (CannedMessage cannedMessage : bot.getConfigManager().getMessageConfig().getCannedMessages()) {
