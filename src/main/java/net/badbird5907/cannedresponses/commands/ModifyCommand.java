@@ -7,9 +7,10 @@ import net.badbird5907.jdacommand.annotation.Required;
 import net.badbird5907.jdacommand.context.CommandContext;
 
 public class ModifyCommand {
-    @Command(name = "addkey", description = "Add a key to a canned message")
+    @Command(name = "addkeycanned", description = "Add a key to a canned message")
     public void addKey(CommandContext ctx, @Required String cannedMessage, @Required String key) {
         if (!canModify(ctx)) {
+            ctx.reply("Imagine not having permissions L");
             return;
         }
         CannedMessage canned = CannedResponses.getInstance().getConfigManager().getCannedMessage(cannedMessage);
@@ -26,9 +27,10 @@ public class ModifyCommand {
         ctx.reply("Added key `" + key + "` to " + canned.getName());
     }
 
-    @Command(name = "removekey", description = "Remove a key from a canned message")
+    @Command(name = "removekeycanned", description = "Remove a key from a canned message")
     public void delKey(CommandContext ctx, @Required String key) {
         if (!canModify(ctx)) {
+            ctx.reply("Imagine not having permissions L");
             return;
         }
         CannedMessage canned = CannedResponses.getInstance().getConfigManager().getCannedMessage(key);
@@ -41,9 +43,10 @@ public class ModifyCommand {
         ctx.reply("Removed key `" + key + "` from " + canned.getName());
     }
 
-    @Command(name = "setresponse", description = "Set the response for a canned message")
+    @Command(name = "setcannedresponse", description = "Set the response for a canned message")
     public void setResponse(CommandContext ctx, @Required String key, @Required String response) {
         if (!canModify(ctx)) {
+            ctx.reply("Imagine not having permissions L");
             return;
         }
         CannedMessage canned = CannedResponses.getInstance().getConfigManager().getCannedMessage(key);
@@ -56,9 +59,10 @@ public class ModifyCommand {
         ctx.reply("Set response for " + canned.getName() + " to `" + response + "`");
     }
 
-    @Command(name = "setname", description = "Set the name for a canned message")
+    @Command(name = "setcannedname", description = "Set the name for a canned message")
     public void setName(CommandContext ctx, @Required String key, @Required String name) {
         if (!canModify(ctx)) {
+            ctx.reply("Imagine not having permissions L");
             return;
         }
         CannedMessage canned = CannedResponses.getInstance().getConfigManager().getCannedMessage(key);
@@ -74,6 +78,7 @@ public class ModifyCommand {
     @Command(name = "addkeyword", description = "Add a keyword to a canned message")
     public void addKeyword(CommandContext ctx, @Required String key, @Required String keyword, @Required boolean required) {
         if (!canModify(ctx)) {
+            ctx.reply("Imagine not having permissions L");
             return;
         }
         CannedMessage canned = CannedResponses.getInstance().getConfigManager().getCannedMessage(key);
@@ -95,6 +100,7 @@ public class ModifyCommand {
     @Command(name = "removekeyword", description = "Remove a keyword from a canned message")
     public void removeKeyword(CommandContext ctx, @Required String key, @Required String keyword) {
         if (!canModify(ctx)) {
+            ctx.reply("Imagine not having permissions L");
             return;
         }
         CannedMessage canned = CannedResponses.getInstance().getConfigManager().getCannedMessage(key);
@@ -116,9 +122,10 @@ public class ModifyCommand {
         ctx.reply("Removed keyword `" + keyword + "` from " + canned.getName() + " (required: " + required + ")");
     }
 
-    @Command(name = "create", description = "Create a new canned message")
+    @Command(name = "createcanned", description = "Create a new canned message")
     public void create(CommandContext ctx, @Required String name, @Required String response, @Required String key) {
         if (!canModify(ctx)) {
+            ctx.reply("Imagine not having permissions L");
             return;
         }
         if (CannedResponses.getInstance().getConfigManager().getCannedMessage(key) != null) {
@@ -137,6 +144,7 @@ public class ModifyCommand {
     @Command(name = "setminimum", description = "Set the minimum number of keywords required to trigger a canned message")
     public void setMinimum(CommandContext ctx, @Required String key, @Required int minimum) {
         if (!canModify(ctx)) {
+            ctx.reply("Imagine not having permissions L");
             return;
         }
         CannedMessage canned = CannedResponses.getInstance().getConfigManager().getCannedMessage(key);
@@ -152,7 +160,22 @@ public class ModifyCommand {
             ctx.reply("Set minimum for " + canned.getName() + " to `" + minimum + "`");
         }
     }
-    public boolean canModify(CommandContext ctx) {
+    @Command(name = "deletecanned", description = "Delete a canned message")
+    public void deleteCanned(CommandContext ctx, @Required String key) {
+        if (!canModify(ctx)) {
+            ctx.reply("Imagine not having permissions L");
+            return;
+        }
+        CannedMessage canned = CannedResponses.getInstance().getConfigManager().getCannedMessage(key);
+        if (canned == null) {
+            ctx.reply("Could not find that key!");
+            return;
+        }
+        CannedResponses.getInstance().getConfigManager().getMessageConfig().getCannedMessages().remove(canned);
+        CannedResponses.getInstance().getConfigManager().saveCannedMessages();
+        ctx.reply("Deleted canned message `" + canned.getName() + "`");
+    }
+    public static boolean canModify(CommandContext ctx) {
         return ctx.getMember().getRoles().stream().anyMatch(r -> CannedResponses.getInstance().getConfigManager().getManagerRoles().contains(r.getIdLong()));
     }
 }

@@ -32,3 +32,14 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'net.badbird5907.cannedresponses.CannedResponses'
+        )
+    }
+    from {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}

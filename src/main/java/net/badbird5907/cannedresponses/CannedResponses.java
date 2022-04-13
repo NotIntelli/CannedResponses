@@ -3,8 +3,8 @@ package net.badbird5907.cannedresponses;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
-import net.badbird5907.cannedresponses.commands.ModifyCommand;
 import net.badbird5907.cannedresponses.commands.CannedMessagesCommand;
+import net.badbird5907.cannedresponses.commands.ModifyCommand;
 import net.badbird5907.cannedresponses.listener.MessageListener;
 import net.badbird5907.cannedresponses.manager.ConfigManager;
 import net.badbird5907.cannedresponses.util.EnvConfig;
@@ -30,10 +30,12 @@ public class CannedResponses {
     private boolean enabled = false;
     @Getter
     private ConfigManager configManager;
+
     public static void main(String[] args) {
         new CannedResponses();
     }
-    public CannedResponses(){
+
+    public CannedResponses() {
         instance = this;
         String token = new EnvConfig().getConfigs().get("token");
         try {
@@ -46,7 +48,7 @@ public class CannedResponses {
 
             jda.awaitReady();
             //set bot status
-            jda.getPresence().setPresence(OnlineStatus.DO_NOT_DISTURB, Activity.of(Activity.ActivityType.WATCHING,"Your Messages"),false);
+            //jda.getPresence().setPresence(OnlineStatus.DO_NOT_DISTURB, Activity.of(Activity.ActivityType.WATCHING, "Your Messages"), false);
             JDACommand command = new JDACommand(jda); // Our command framework - https://github.com/Badbird-5907/JDACommand
             command.registerCommand(new CannedMessagesCommand());
             command.registerCommand(new ModifyCommand());

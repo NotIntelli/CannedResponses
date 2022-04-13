@@ -21,7 +21,7 @@ public class CannedMessagesCommand {
             ctx.reply(canned.getResponse());
         }
     }
-    @Command(name = "info",description = "Shows information about a canned message")
+    @Command(name = "cannedinfo",description = "Shows information about a canned message")
     public void info(CommandContext ctx, @Required String key) {
         CannedMessage canned = CannedResponses.getInstance().getConfigManager().getCannedMessage(key);
         if (canned == null) {
@@ -31,11 +31,15 @@ public class CannedMessagesCommand {
         ctx.reply(canned.getInfo());
     }
 
-    @Command(name = "reload", description = "Reload config")
+    @Command(name = "reloadcanned", description = "Reload config (canned messages)")
     public void reload(CommandContext ctx) {
+        if (!ModifyCommand.canModify(ctx)) {
+            ctx.reply("Imagine not having permissions L");
+            return;
+        }
         long start = System.currentTimeMillis();
         CannedResponses.getInstance().getConfigManager().reload(CannedResponses.getInstance());
-        ctx.reply("Reloaded config in " + (System.currentTimeMillis() - start) + "ms");
+        ctx.reply("Reloaded canned messages config in " + (System.currentTimeMillis() - start) + "ms");
     }
 
 }

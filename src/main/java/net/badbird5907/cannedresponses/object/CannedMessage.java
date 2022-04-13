@@ -19,15 +19,18 @@ public class CannedMessage {
     private Set<String> keys;
     private String response = null;
     private boolean automated = false;
-    private List<String> keywords, //has to contain at least one keyword
+    private List<String> keywords, // has to contain at least one keyword
             keywordsRequired; // has to contain all keywords
     private int minimumWords = -1;
     private String name;
+    private Set<Long> ignoredChannels,allowedChannels;
 
     public CannedMessage() {
         keywords = new ArrayList<>();
         keywordsRequired = new ArrayList<>();
         keys = new HashSet<>();
+        ignoredChannels = new HashSet<>();
+        allowedChannels = new HashSet<>();
     }
 
     public CannedMessage load(JsonObject json) {
@@ -41,6 +44,12 @@ public class CannedMessage {
             automated.get("keywords-required").getAsJsonArray().forEach(key -> keywordsRequired.add(key.getAsString().toLowerCase()));
             if (automated.has("minimum-words")) {
                 minimumWords = automated.get("minimum-words").getAsInt();
+            }
+            if (automated.has("ignored-channels")) {
+                json.get("ignored-channels").getAsJsonArray().forEach(channel -> ignoredChannels.add(channel.getAsLong()));
+            }
+            if (automated.has("allowed-channels")) {
+                json.get("allowed-channels").getAsJsonArray().forEach(channel -> allowedChannels.add(channel.getAsLong()));
             }
         }
         return this;
