@@ -2,14 +2,14 @@ package net.badbird5907.cannedresponses.listener;
 
 import net.badbird5907.cannedresponses.CannedResponses;
 import net.badbird5907.cannedresponses.object.CannedMessage;
-import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
-import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.api.entities.Emoji;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.Command;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.Objects;
 
 public class MessageListener extends ListenerAdapter {
@@ -61,26 +61,20 @@ public class MessageListener extends ListenerAdapter {
                     return;
                 }
             if (cannedMessage.isAutomated()) {
-                if (!cannedMessage.getKeywordsRequired().isEmpty() && cannedMessage.getKeywordsRequired().stream().noneMatch(keyword -> content.toLowerCase().contains(keyword.toLowerCase()))) {
-                    continue;
-                }
-                if (!cannedMessage.getKeywords().isEmpty() && cannedMessage.getKeywords().stream().noneMatch(keyword -> content.toLowerCase().contains(keyword.toLowerCase()))) {
-                    continue;
-                }
-
-                if (cannedMessage.canReply(content, words, bot)) {
-                    event.getMessage().reply(cannedMessage.getResponse()).queue();
+                if (cannedMessage.canReply(content, words, bot, event.getChannel())) {
+                    event.getMessage().reply(cannedMessage.getResponse())
+                            .setActionRow(Button.danger("delete", Emoji.fromUnicode("\uD83D\uDDD1"))).queue();
                     return;
                 }
             }
         }
     }
 
-
     @Override
-    public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
-        System.out.println("Joined: " + event.getMember().getUser().getAsTag());
-        //event.getGuild().addRoleToMember(event.getMember(), Objects.requireNonNull(event.getGuild().getRoleById("962018191628959774"))).queue();
+    public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
+        super.onButtonInteraction(event);
+        if (event.getInteraction().getButton().getId().equals("delete")) {
+            event.getMessage().delete().queue();
+        }
     }
-
 }

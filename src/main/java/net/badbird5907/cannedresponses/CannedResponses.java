@@ -7,6 +7,7 @@ import net.badbird5907.cannedresponses.commands.CannedMessagesCommand;
 import net.badbird5907.cannedresponses.commands.ModifyCommand;
 import net.badbird5907.cannedresponses.listener.MessageListener;
 import net.badbird5907.cannedresponses.manager.ConfigManager;
+import net.badbird5907.cannedresponses.provider.TextChannelProvider;
 import net.badbird5907.cannedresponses.util.EnvConfig;
 import net.badbird5907.jdacommand.JDACommand;
 import net.dv8tion.jda.api.JDA;
@@ -50,6 +51,9 @@ public class CannedResponses {
             //set bot status
             //jda.getPresence().setPresence(OnlineStatus.DO_NOT_DISTURB, Activity.of(Activity.ActivityType.WATCHING, "Your Messages"), false);
             JDACommand command = new JDACommand(jda); // Our command framework - https://github.com/Badbird-5907/JDACommand
+
+            command.registerProvider(new TextChannelProvider());
+
             command.registerCommand(new CannedMessagesCommand());
             command.registerCommand(new ModifyCommand());
 

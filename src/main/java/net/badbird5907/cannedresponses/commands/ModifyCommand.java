@@ -5,6 +5,8 @@ import net.badbird5907.cannedresponses.object.CannedMessage;
 import net.badbird5907.jdacommand.annotation.Command;
 import net.badbird5907.jdacommand.annotation.Required;
 import net.badbird5907.jdacommand.context.CommandContext;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.TextChannel;
 
 public class ModifyCommand {
     @Command(name = "addkeycanned", description = "Add a key to a canned message")
@@ -174,6 +176,44 @@ public class ModifyCommand {
         CannedResponses.getInstance().getConfigManager().getMessageConfig().getCannedMessages().remove(canned);
         CannedResponses.getInstance().getConfigManager().saveCannedMessages();
         ctx.reply("Deleted canned message `" + canned.getName() + "`");
+    }
+    @Command(name = "addignored",description = "Add a ignored channel")
+    public void addIgnored(CommandContext ctx, @Required TextChannel channel, @Required String key) {
+        if (!canModify(ctx)) {
+            ctx.reply("Imagine not having permissions L");
+            return;
+        }
+        CannedMessage canned = CannedResponses.getInstance().getConfigManager().getCannedMessage(key);
+        if (canned == null) {
+            ctx.reply("Could not find that key!");
+            return;
+        }
+        if (canned.getIgnoredChannels().contains(channel.getIdLong())) {
+            ctx.reply("That channel is already ignored!");
+            return;
+        }
+        canned.getIgnoredChannels().add(channel.getIdLong());
+        CannedResponses.getInstance().getConfigManager().saveCannedMessages();
+        ctx.reply("Added channel `" + channel.getName() + "` to ignored channels for `" + canned.getName() + "`");
+    }
+    @Command(name = "removeignored",description = "Remove a ignored channel")
+    public void removeIgnored(CommandContext ctx, @Required TextChannel channel, @Required String key) {
+        if (!canModify(ctx)) {
+            ctx.reply("Imagine not having permissions L");
+            return;
+        }
+        CannedMessage canned = CannedResponses.getInstance().getConfigManager().getCannedMessage(key);
+        if (canned == null) {
+            ctx.reply("Could not find that key!");
+            return;
+        }
+        if (!canned.getIgnoredChannels().contains(channel.getIdLong())) {
+            ctx.reply("That channel is not ignored!");
+            return;
+        }
+        canned.getIgnoredChannels().remove(channel.getIdLong());
+        CannedResponses.getInstance().getConfigManager().saveCannedMessages();
+        ctx.reply("Removed channel `" + channel.getName() + "` from ignored channels for `" + canned.getName() + "`");
     }
     public static boolean canModify(CommandContext ctx) {
         return ctx.getMember().getRoles().stream().anyMatch(r -> CannedResponses.getInstance().getConfigManager().getManagerRoles().contains(r.getIdLong()));
