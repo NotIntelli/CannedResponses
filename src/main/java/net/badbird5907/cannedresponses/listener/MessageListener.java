@@ -57,7 +57,8 @@ public class MessageListener extends ListenerAdapter {
         for (CannedMessage cannedMessage : bot.getConfigManager().getMessageConfig().getCannedMessages()) {
             if (cannedResponse)
                 if (cannedMessage.getKeys().stream().anyMatch(k -> content.replace(bot.getConfigManager().getPrefix(), "").equalsIgnoreCase(k))) {
-                    event.getMessage().reply(cannedMessage.getResponse()).queue();
+                    event.getMessage().reply(cannedMessage.getResponse())
+                            .setActionRow(Button.danger("delete", Emoji.fromUnicode("\uD83D\uDDD1"))).queue();
                     return;
                 }
             if (cannedMessage.isAutomated()) {
