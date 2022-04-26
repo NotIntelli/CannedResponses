@@ -133,8 +133,13 @@ public class CannedMessage {
                     .addField("Keywords Required", keywordsRequired.toString(), true)
                     .addField("Minimum Words To Activate", (minimumWords != -1 ? minimumWords : CannedResponses.getInstance().getConfigManager().getMinimumWords()) + "", true)
                     .addField("Ignored Channels", ignoredChannels.toString(), true)
-                    .addField("Regex Patterns", "Keywords: `" + keywordsPattern.pattern() + "`\nKeywords Required: `" + requiredKeywordsPattern.pattern() + "`", true);
             ;
+            if (requiredKeywordsPattern != null) {
+                builder.addField("Required Keywords Pattern", requiredKeywordsPattern.pattern(), true);
+            }
+            if (keywordsPattern != null) {
+                builder.addField("Keywords Pattern", keywordsPattern.pattern(), true);
+            }
         }
         return builder.build();
     }
