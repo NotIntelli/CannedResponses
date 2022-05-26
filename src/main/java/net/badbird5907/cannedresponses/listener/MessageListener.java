@@ -75,6 +75,12 @@ public class MessageListener extends ListenerAdapter {
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
         super.onButtonInteraction(event);
         if (event.getInteraction().getButton().getId().equals("delete")) {
+            if (event.getInteraction().getMessage().getReferencedMessage() != null &&
+                    event.getInteraction().getMessage().getReferencedMessage().getMember().getIdLong() !=
+                            event.getMember().getIdLong()) {
+                event.reply("This isn't your message!").queue();
+                return;
+            }
             event.getMessage().delete().queue();
         }
     }
