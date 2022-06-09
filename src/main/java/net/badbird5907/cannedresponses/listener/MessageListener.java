@@ -57,8 +57,8 @@ public class MessageListener extends ListenerAdapter {
         for (CannedMessage cannedMessage : bot.getConfigManager().getMessageConfig().getCannedMessages()) {
             if (cannedResponse)
                 if (cannedMessage.getKeys().stream().anyMatch(k -> content.replace(bot.getConfigManager().getPrefix(), "").equalsIgnoreCase(k))) {
-                    event.getMessage().reply(cannedMessage.getResponse())
-                            .setActionRow(Button.danger("delete", Emoji.fromUnicode("\uD83D\uDDD1"))).queue();
+                    event.getMessage().reply(cannedMessage.getResponse()).queue();
+                            //.setActionRow(Button.danger("delete", Emoji.fromUnicode("\uD83D\uDDD1"))).queue(); //people are assholes
                     return;
                 }
             if (cannedMessage.isAutomated()) {
@@ -76,9 +76,8 @@ public class MessageListener extends ListenerAdapter {
         super.onButtonInteraction(event);
         if (event.getInteraction().getButton().getId().equals("delete")) {
             if (event.getInteraction().getMessage().getReferencedMessage() != null &&
-                    event.getInteraction().getMessage().getReferencedMessage().getMember().getIdLong() !=
-                            event.getMember().getIdLong()) {
-                event.reply("This isn't your message!").queue();
+                    !event.getInteraction().getMessage().getReferencedMessage().getAuthor().getId().equals(event.getMember().getId())) {
+                event.reply("This isn't your message!").setEphemeral(true).queue();
                 return;
             }
             event.getMessage().delete().queue();

@@ -12,13 +12,13 @@ import net.badbird5907.cannedresponses.util.EnvConfig;
 import net.badbird5907.jdacommand.JDACommand;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.OnlineStatus;
-import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
 import javax.security.auth.login.LoginException;
 import java.util.Date;
 import java.util.Scanner;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class CannedResponses {
     @Getter
@@ -31,6 +31,9 @@ public class CannedResponses {
     private boolean enabled = false;
     @Getter
     private ConfigManager configManager;
+
+    @Getter
+    private static final ScheduledExecutorService threadPool = Executors.newSingleThreadScheduledExecutor();
 
     public static void main(String[] args) {
         new CannedResponses();
@@ -61,7 +64,7 @@ public class CannedResponses {
             System.out.println("Registering commands with discord, this may take a while...");
             enabled = true;
 
-            if (System.getProperty("cannedresponses.dev").equalsIgnoreCase("true")) {
+            if (System.getProperty("cannedresponses.dev") != null && System.getProperty("cannedresponses.dev").equalsIgnoreCase("true")) {
                 new Thread("Console Thread") { // to gracefully shutdown if using intellij
                     @Override
                     public void run() {
