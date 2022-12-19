@@ -3,6 +3,7 @@ package net.badbird5907.cannedresponses.listener;
 import net.badbird5907.cannedresponses.CannedResponses;
 import net.badbird5907.cannedresponses.object.CannedMessage;
 import net.dv8tion.jda.api.entities.Emoji;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -57,7 +58,8 @@ public class MessageListener extends ListenerAdapter {
         for (CannedMessage cannedMessage : bot.getConfigManager().getMessageConfig().getCannedMessages()) {
             if (cannedResponse)
                 if (cannedMessage.getKeys().stream().anyMatch(k -> content.replace(bot.getConfigManager().getPrefix(), "").equalsIgnoreCase(k))) {
-                    event.getMessage().reply(cannedMessage.getResponse()).queue();
+                    Message repliedTo = event.getMessage().getReferencedMessage();
+                    (repliedTo == null ? event.getMessage() : repliedTo).reply(cannedMessage.getResponse()).queue(); //if the command message is a reply, reply to the replied message
                             //.setActionRow(Button.danger("delete", Emoji.fromUnicode("\uD83D\uDDD1"))).queue(); //people are assholes
                     return;
                 }
